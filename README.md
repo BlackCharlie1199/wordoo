@@ -2,14 +2,12 @@
 
 A small vocabulary practice website built with **React**, **Vite**, and **Tailwind CSS**.
 
----
 
 ##  Requirements
 - Node.js 
 - npm (comes with Node.js)
 - git
 
----
 
 ##  Installation
 
@@ -24,7 +22,6 @@ cd miniquizlet
 npm install
 ```
 
----
 
 ## Local Development
 
@@ -38,7 +35,6 @@ Open your browser and visit:
 http://localhost:5173
 ```
 
----
 
 ## Deployment (GitHub Pages)
 1. Build the project
@@ -53,7 +49,6 @@ npm run build
 npm run deploy
 ```
 
----
 
 ## Project Structure
 ```bash
