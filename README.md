@@ -14,8 +14,10 @@ A small vocabulary practice website built with **React**, **Vite**, and **Tailwi
 ##  Installation
 
 1. Clone the repository:
-> git clone https://github.com/BlackCharlie1199/miniquizlet.git
-> cd miniquizlet
+```bash
+git clone https://github.com/BlackCharlie1199/miniquizlet.git
+cd miniquizlet
+```
 
 2. Install dependencies:
 > npm install
