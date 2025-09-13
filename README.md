@@ -20,26 +20,38 @@ cd miniquizlet
 ```
 
 2. Install dependencies:
-> npm install
+```bash
+npm install
+```
 
 ---
 
 ## Local Development
 
 Start the local development server:
-> npm run dev
+```bash
+npm run dev
+```
 
 Open your browser and visit:
-> http://localhost:5173
+```bash
+http://localhost:5173
+```
 
 ---
 
 ## Deployment (GitHub Pages)
 1. Build the project
-> npm run build
+
+```bash
+npm run build
+```
 
 3. Deploy to the github page
-> npm run deploy
+
+```bash
+npm run deploy
+```
 
 ---
 
