@@ -1,0 +1,3 @@
+.header-title {
+  @apply h-10 bg-blue-600 flex items-center justify-center text-white text-lg font-bold;
+}
