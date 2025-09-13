@@ -42,10 +42,11 @@ Open your browser and visit:
 ---
 
 ## Project Structure
-> src/
-> ┣ components/   # Reusable components (e.g., Button.jsx)
-> ┣ pages/        # Application pages (Home.jsx, MyWord.jsx, Setting.jsx)
-> ┣ styles/       # CSS styles
-> ┣ App.jsx       # Main app component
-> ┣ main.jsx      # Entry point
+```bash
+src/
+ ┣ components/   # Reusable components (e.g., Button.jsx)
+ ┣ pages/        # Application pages (Home.jsx, MyWord.jsx, Setting.jsx)
+ ┣ styles/       # CSS styles
+ ┣ App.jsx       # Main app component
+ ┗ main.jsx      # Entry point
 
