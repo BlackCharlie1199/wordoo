@@ -43,12 +43,15 @@ http://localhost:5173
 npm run build
 ```
 
-3. Deploy to the github page
+2. Deploy to the github page
 
 ```bash
 npm run deploy
 ```
 
+Notes:
+The website will be published at:
+https://blackcharlie1199.github.io/miniquizlet/
 
 ## Project Structure
 ```bash
