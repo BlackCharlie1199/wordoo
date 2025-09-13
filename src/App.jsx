@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
 import React from 'react';
 import Home from './pages/Home';
 import MyWord from './pages/MyWord';
@@ -8,7 +8,7 @@ import './styles/header.css';
 
 const App = () => {
   return (
-    <Router>
+    <>
       {/* Header Component */}
       <header className="header-title">quizlet</header>
 
@@ -20,7 +20,7 @@ const App = () => {
           <Route path="/setting" element={<Setting />} />
         </Routes>
       </main>
-    </Router>
+    </>
   )
 };
 
