@@ -1,3 +1,17 @@
 .header-title {
-  @apply h-10 bg-blue-600 flex items-center justify-center text-white text-lg font-bold;
+  @apply 
+    /* the height of bar */
+    h-10 
+
+    /* backround color of bar */
+    bg-blue-600 flex 
+
+    /* item's position */
+    items-center justify-center 
+
+    /* fix the header in the top */
+    top-0 left-0 w-full z-50
+
+    /* text color */
+    text-white text-lg font-bold;
 }

@@ -1,10 +1,10 @@
 import React from "react";
 import { loadUserLanguage } from "./helper";
+import { useNavigate } from 'react-router-dom';
 import wordBanks from "../../dictionary/wordBanks.json";
 
 const MyWord = () => {
-  console.log(localStorage.getItem("language"));
-  console.log(loadUserLanguage());
+  const navigate = useNavigate();
 
   return (
     <div className="p-4">
@@ -13,7 +13,7 @@ const MyWord = () => {
         {wordBanks.map((bank) => (
           <button
             key={bank.id}
-            onClick={() => navigate(`/wordbank/${bank.id}`)}
+            onClick={() => navigate(`/myword/wordbank/${bank.id}`)}
             className="w-full p-3 border rounded shadow-sm text-left hover:bg-gray-100 transition"
           >
             <p className="font-semibold text-lg">{bank.name}</p>

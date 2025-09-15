@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const WordBank = () => {
-  const { id } = useParams(); // 例如 test, basic
+  const { id } = useParams(); // for example test, basic
   const [bank, setBank] = useState(null);
 
   useEffect(() => {
-    // 動態載入對應 JSON
+    // load the vocabulary dynamically
     import(`../../dictionary/word/${id}.json`)
       .then((data) => setBank(data.default))
-      .catch((err) => console.error("❌ 無法載入字庫:", err));
+      .catch((err) => console.error("cannot load dictionary", err));
   }, [id]);
 
   if (!bank) return <p>Loading...</p>;
