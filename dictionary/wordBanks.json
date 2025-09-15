@@ -1,0 +1,8 @@
+[
+  { "id": 1, "name": "基礎單字", "description": "常用英文單字" },
+  { "id": 2, "name": "進階單字", "description": "TOEFL 單字" },
+  { "id": 3, "name": "my word bank", "description": "英文雜誌單字 9/15" },
+  { "id": 4, "name": "my word bank", "description": "英文雜誌單字 9/16" },
+  { "id": 5, "name": "my word bank", "description": "英文雜誌單字 9/20" },
+  { "id": 6, "name": "my word bank", "description": "英文雜誌單字 9/31" }
+]
