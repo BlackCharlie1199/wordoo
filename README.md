@@ -21,20 +21,21 @@ git clone https://github.com/BlackCharlie1199/miniquizlet.git && cd miniquizlet
 npm install
 ```
 
-## Deployment (Firebase Pages)
+## Deployment (By firebase)
 1. Build the project
 
 ```bash
 npm run build
 ```
 
-2. Deploy the page by firebase
+2. Deploy the page 
 
 ```bash
 firebase deploy
 ```
+## Deployment (locally)
 
-3. Deploy the page locally
+1. Run the command in your terminal
 
 ```bash
 npm run dev
