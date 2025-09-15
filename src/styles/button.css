@@ -12,8 +12,11 @@
     /* click the button */
     focus:outline-none focus:ring-2 
 
-    /* change button's size when hovering on the button */
-    hover:shadow-lg hover:scale-110;
+    /* change button's size when hovering */
+    hover:shadow-lg hover:scale-150
+
+    /* have ring when hovering */
+    hover:ring-2 hover:ring-yellow-300;
 }
 
 .btn-green {
