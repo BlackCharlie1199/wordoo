@@ -12,7 +12,6 @@ const Home = () => {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      console.log("User: ", result.user);
       navigate("/myword");
     } catch (error) {
       console.error(error);

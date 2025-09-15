@@ -8,6 +8,7 @@ import './styles/header.css';
 
 const App = () => {
 
+  // set the default lang and store it in the local storage 
   const DEFAULT_LANG = "en";
   if (!localStorage.getItem("language")) localStorage.setItem("language", DEFAULT_LANG);
 

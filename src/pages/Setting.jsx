@@ -1,5 +1,6 @@
 // Setting.jsx
 import React, { useState, useEffect } from "react";
+import { saveUserLanguage } from "./helper";
 
 const Setting = () => {
   const [language, setLanguage] = useState("en");
@@ -15,6 +16,7 @@ const Setting = () => {
     const newLang = e.target.value;
     setLanguage(newLang);
     localStorage.setItem("language", newLang);
+    saveUserLanguage(newLang);
   };
 
   return (
