@@ -28,7 +28,7 @@ npm install
 npm run build
 ```
 
-2. Deploy to the page by firebase
+2. Deploy the page by firebase
 
 ```bash
 firebase deploy
