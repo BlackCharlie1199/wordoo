@@ -34,9 +34,11 @@ npm run build
 firebase deploy
 ```
 
-Notes:
-The website will be published at:
-https://wordoo-5eacd.web.app/
+3. Deploy the page locally
+
+```bash
+npm run dev
+```
 
 ## Project Structure
 ```bash

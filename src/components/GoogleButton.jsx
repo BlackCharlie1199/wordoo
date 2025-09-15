@@ -5,7 +5,8 @@ const GoogleButton = ({ onClick }) => {
   return (
     <button
       onClick={onClick}
-      className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-100 transition"
+      className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-100 transition
+                 focus:scale-125"
     >
       {/* Google "G" logo (SVG) */}
       <svg
