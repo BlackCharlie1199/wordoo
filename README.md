@@ -21,36 +21,22 @@ git clone https://github.com/BlackCharlie1199/miniquizlet.git && cd miniquizlet
 npm install
 ```
 
-
-## Local Development
-
-Start the local development server:
-```bash
-npm run dev
-```
-
-Open your browser and visit:
-```bash
-http://localhost:5173
-```
-
-
-## Deployment (GitHub Pages)
+## Deployment (Firebase Pages)
 1. Build the project
 
 ```bash
 npm run build
 ```
 
-2. Deploy to the github page
+2. Deploy to the page by firebase
 
 ```bash
-npm run deploy
+firebase deploy
 ```
 
 Notes:
 The website will be published at:
-https://blackcharlie1199.github.io/miniquizlet/
+https://wordoo-5eacd.web.app/
 
 ## Project Structure
 ```bash
