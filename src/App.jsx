@@ -7,6 +7,10 @@ import './index.css';
 import './styles/header.css';
 
 const App = () => {
+
+  const DEFAULT_LANG = "en";
+  if (!localStorage.getItem("language")) localStorage.setItem("language", DEFAULT_LANG);
+
   return (
     <>
       {/* Header Component */}
