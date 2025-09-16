@@ -4,6 +4,7 @@ import Button from '../components/Button';
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import { GoogleSignInButton, GoogleSignOutButton} from "../components/GoogleButton";
 import { auth } from "../firebase";
+import { loadUserLanguage } from './helper';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -24,11 +25,13 @@ const Home = () => {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
+      await loadUserLanguage();
       navigate("/myword");
     } catch (error) {
       console.error(error);
     }
   }
+
 
   return (
     <div className="flex flex-col items-center gap-4">

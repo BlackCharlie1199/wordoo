@@ -1,1 +1,0 @@
-const t="1",i="Test Word Bank",o=[{term:"apple",definition:"a round fruit"},{term:"book",definition:"a set of written pages"},{term:"word_1",definition:"It's trivial."}],e={id:t,title:i,words:o};export{e as default,t as id,i as title,o as words};

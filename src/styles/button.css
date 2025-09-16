@@ -31,3 +31,8 @@
   @apply
     bg-gray-500 hover:bg-gray-600 focus:ring-gray-400;
 }
+
+.btn-blue {
+  @apply
+    bg-blue-500 hover:bg-blue-600 focus:ring-blue-400;
+}

@@ -1,5 +1,5 @@
 import { Routes, Route, Link } from 'react-router-dom';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Home from './pages/Home';
 import MyWord from './pages/MyWord';
 import Setting from './pages/Setting';
@@ -7,12 +7,16 @@ import WordBank from './pages/WordBank';
 import './index.css';
 import './styles/header.css';
 import './styles/footer.css';
+import { loadUserLanguage } from './pages/helper';
 
 const App = () => {
 
-  // set the default lang and store it in the local storage 
-  const DEFAULT_LANG = "en";
-  if (!localStorage.getItem("language")) localStorage.setItem("language", DEFAULT_LANG);
+
+  useEffect(() => {
+    loadUserLanguage();
+  }, []);
+  
+
 
   return (
     <>

@@ -1,9 +1,0 @@
-{
-  "id": "1",
-  "title": "Test Word Bank",
-  "words": [
-    { "term": "apple", "definition": "a round fruit" },
-    { "term": "book", "definition": "a set of written pages" },
-    { "term" : "word_1", "definition": "It's trivial."}
-  ]
-}
