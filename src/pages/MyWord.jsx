@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { db } from "../firebase";
 import { collection, getDocs, serverTimestamp, addDoc } from "firebase/firestore";
 import { auth } from '../firebase.js';
-import { FaPlus } from "react-icons/fa";
+import { onAuthStateChanged } from "firebase/auth";
 
 const MyWord = () => {
   const navigate = useNavigate();
@@ -13,33 +13,40 @@ const MyWord = () => {
   const [newDescription, setNewDescription] = useState("");
 
   useEffect(() => {
-    const load = async () => {
+
+    const load = async (user) => {
       try {
-        const user = auth.currentUser;
         let data = [];
+
+        const defaultSnap = await getDocs(collection(db, "wordbanks"));
+        const defaultData = defaultSnap.docs.map(d => ({ id: d.id, ...d.data(), isDefault: true }));
+
+        data = [...defaultData];
+
         if (user) {
-          const snap = await getDocs(collection(db, "users", user.uid, "wordbanks"));
-          data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        }
-        if (data.length === 0) {
-          const snap = await getDocs(collection(db, "wordbanks"));
-          data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          const userSnap = await getDocs(collection(db, "users", user.uid, "wordbanks"));
+          const userData = userSnap.docs.map(d => ({ id: d.id, ...d.data(), isDefault: false }));
+          data = [...data, ...userData];
         }
         setWordBanks(data);
       } catch (e) {
         console.error("Error loading word banks:", e);
       }
-    };
+    }
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      load(user)
+    });
 
     const addWordbankEvent = () => {
       setShowModal(true);
     }
 
-    window.addEventListener("addWordbank", addWordbankEvent);
-    load();
+    window.addEventListener("add", addWordbankEvent);
 
     return () => {
-      window.removeEventListener("addWordbank", addWordbankEvent);
+      window.removeEventListener("add", addWordbankEvent);
+      unsubscribe();
     }
   }, []);
 

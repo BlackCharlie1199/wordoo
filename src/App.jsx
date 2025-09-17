@@ -24,7 +24,9 @@ const App = () => {
   return (
     <>
       {/* Header Component */}
-      <header className="header-title">wordoo</header>
+      <header className="header-title">
+        <Link to="/">Wordoo</Link>
+      </header>
 
       {/* Main content area */}
       <main className="pt-10 pb-10 min-h-[calc(100vh-40px)] flex items-center justify-center">
@@ -41,7 +43,7 @@ const App = () => {
         {showAddButton && (
           <button
             onClick={() => {
-              window.dispatchEvent(new Event("addWordbank"));
+              window.dispatchEvent(new Event("add"));
             }}
             className="bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 transition"
           >
