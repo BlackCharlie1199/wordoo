@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { db } from "../firebase";
 import { collection, getDocs, serverTimestamp, addDoc } from "firebase/firestore";
 import { auth } from '../firebase.js';
+import { FaPlus } from "react-icons/fa";
 
 const MyWord = () => {
   const navigate = useNavigate();
@@ -29,10 +30,21 @@ const MyWord = () => {
         console.error("Error loading word banks:", e);
       }
     };
+
+    const addWordbankEvent = () => {
+      setShowModal(true);
+    }
+
+    window.addEventListener("addWordbank", addWordbankEvent);
     load();
+
+    return () => {
+      window.removeEventListener("addWordbank", addWordbankEvent);
+    }
   }, []);
 
-  const handleAddWordBank = async () => {
+
+  const addWordBank = async () => {
     if (!newName.trim()) {
       alert("Please enter a word bank name!");
       return;
@@ -69,6 +81,8 @@ const MyWord = () => {
     }
   };
 
+  
+
   return (
     <div className="p-4">
       <ul className="space-y-2">
@@ -83,16 +97,6 @@ const MyWord = () => {
           </button>
         ))}
       </ul>
-
-      {/* Add Word Bank Button */}
-      <div className="mt-6">
-        <button
-          onClick={() => setShowModal(true)}
-          className="w-full p-3 border rounded bg-blue-500 text-white hover:bg-blue-600 transition"
-        >
-          ＋ Add Word Bank
-        </button>
-      </div>
 
       {/* Modal */}
       {showModal && (
@@ -123,7 +127,7 @@ const MyWord = () => {
                 Cancel
               </button>
               <button
-                onClick={handleAddWordBank}
+                onClick={addWordBank}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
               >
                 Confirm

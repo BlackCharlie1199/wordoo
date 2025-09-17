@@ -26,7 +26,7 @@ const WordBank = () => {
     fetchWordBank();
   }, [id]);
 
-  if (!bankInfo) return <p>Loading...</p>;
+  if (!bankInfo) return <p>Your wordbank is empty, please add some words.</p>;
 
   return (
     <div className="p-4 text-center">

@@ -1,5 +1,6 @@
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import React, { useEffect } from 'react';
+import { FaPlus } from 'react-icons/fa';
 import Home from './pages/Home';
 import MyWord from './pages/MyWord';
 import Setting from './pages/Setting';
@@ -11,6 +12,8 @@ import { loadUserLanguage } from './pages/helper';
 
 const App = () => {
 
+  const location = useLocation();
+  const showAddButton = location.pathname.startsWith("/myword");
 
   useEffect(() => {
     loadUserLanguage();
@@ -34,7 +37,18 @@ const App = () => {
       </main>
 
       {/* Footer Component */}
-      <footer className="footer-bar">© 2025 wordoo</footer>
+      <footer className="footer-bar">
+        {showAddButton && (
+          <button
+            onClick={() => {
+              window.dispatchEvent(new Event("addWordbank"));
+            }}
+            className="bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 transition"
+          >
+            <FaPlus size={16} />
+          </button>
+        )}
+      </footer>
     </>
   )
 };
