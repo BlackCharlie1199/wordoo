@@ -31,7 +31,7 @@ const MyWord = () => {
         setWordBanks(data);
       } catch (e) {
         console.error("Error loading word banks:", e);
-      }
+      }    
     }
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -57,12 +57,6 @@ const MyWord = () => {
       return;
     }
 
-    const user = auth.currentUser;
-    if (!user) {
-      alert("You must be logged in to create a word bank.");
-      return;
-    }
-
     const path = `users/${user.uid}/wordbanks`;
     console.log("Writing to:", path);
 
@@ -82,6 +76,8 @@ const MyWord = () => {
       setNewName("");
       setNewDescription("");
       setShowModal(false);
+
+      alert("Word bank added successfully!");
     } catch (e) {
       console.error("Failed to add word bank:", e.code, e.message);
       alert("Failed to add word bank. Please check your permissions.");
