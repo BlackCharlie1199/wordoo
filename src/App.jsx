@@ -5,6 +5,8 @@ import Home from './pages/Home';
 import MyWord from './pages/MyWord';
 import Setting from './pages/Setting';
 import WordBank from './pages/WordBank';
+import Quiz from './pages/Quiz';
+import Learn from './pages/Learn';
 import './index.css';
 import './styles/header.css';
 import './styles/footer.css';
@@ -35,6 +37,8 @@ const App = () => {
           <Route path="/myword" element={<MyWord />} />
           <Route path="/setting" element={<Setting />} />
           <Route path="/myword/wordbank/:id" element={<WordBank/>} />
+          <Route path="/quiz/:id" element={<Quiz />} />
+          <Route path="/learn/:id" element={<Learn />} />
         </Routes>
       </main>
 
