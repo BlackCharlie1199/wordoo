@@ -12,7 +12,7 @@ const WordBank = () => {
   const navigate = useNavigate();
   const [bankInfo, setBankInfo] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [enWord, setEnWord] = useState("");
   const [translWord, setTranslWord] = useState("");
 
@@ -39,11 +39,11 @@ const WordBank = () => {
           } else {
             setBankInfo(null);
           }
-
+          
           } catch (e) {
             console.error("Error loading word bank: ", e);
           } finally {
-            setTimeout(() => setLoading(false), 500);
+            setLoading(false);
           }
 
         };
@@ -79,9 +79,11 @@ const WordBank = () => {
         wordsColRef = collection(db, "users", user.uid, "wordbanks", id, "words");
       } 
 
+      userLang = localStorage.getItem("language");
+
       await addDoc(wordsColRef, {
         en: enWord,
-        transl: translWord,
+        transl : translWord,
         createdAt: serverTimestamp(),
       });
 
@@ -96,7 +98,7 @@ const WordBank = () => {
     }
   };
 
-  if (!bankInfo) return <LoadingSpinner></LoadingSpinner>;
+  if (loading) return <LoadingSpinner></LoadingSpinner>;
 
   return (
     <div className="p-4 text-center">

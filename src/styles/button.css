@@ -10,11 +10,11 @@
     transition duration-200 ease-in-out
 
     /* click the button */
-    focus:ring-2 focus:scale-150 focus:ring-yellow-600
+    focus:ring-2  focus:ring-yellow-600
     
 
     /* change button's size when hovering */
-    hover:shadow-lg hover:scale-125
+    hover:shadow-lg 
     
 
     /* have ring when hovering */

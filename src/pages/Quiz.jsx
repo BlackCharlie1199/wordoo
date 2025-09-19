@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db, auth } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { FaCheck, FaTimes } from "react-icons/fa";
 
 const Quiz = () => {
   const { id } = useParams();
@@ -10,6 +11,7 @@ const Quiz = () => {
   const [displayTransl, setDisplayTransl] = useState("");
   const [feedback, setFeedback] = useState("");
   const [source, setSource] = useState("");
+  const [loading, setLoading] = useState(true);
   const [score, setScore] = useState(0); // ✅ 答對數
   const [total, setTotal] = useState(0); // ✅ 總題數
   const userLang = localStorage.getItem("language") || "transl";
@@ -41,6 +43,8 @@ const Quiz = () => {
         }
       } catch (e) {
         console.error("Error loading words:", e);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -84,55 +88,54 @@ const Quiz = () => {
     setTimeout(() => {
       generateQuestion(words);
       setFeedback("");
-    }, 1000);
+    }, 500);
   };
 
-  if (!current) return <p className="text-center mt-10">Loading quiz...</p>;
+  if (loading) return <LoadingSpinner></LoadingSpinner>;
 
   return (
-    <div className="p-6 flex flex-col items-center gap-6">
-      <h2 className="text-lg text-gray-600">{source}</h2>
+    <div className="p-2 flex flex-col items-center gap-3 text-sm min-h-screen">
+        {/* 回饋 */}
+        {feedback && <p className="mt-2 text-sm">{feedback}</p>}
 
-      {/* 計分區 */}
-      <p className="text-md text-gray-800">
-        Score: <span className="font-bold">{score}</span> / {total}
-        {total > 0 && (
-          <span className="ml-2 text-sm text-gray-500">
-            ({Math.round((score / total) * 100)}%)
-          </span>
-        )}
-      </p>
+        {/* Score */}
+        <p className="text-sm text-gray-800">
+          Score: <span className="font-bold">{score}</span> / {total}
+          {total > 0 && (
+            <span className="ml-1 text-xs text-gray-600">
+              ({Math.round((score / total) * 100)}%)
+            </span>
+          )}
+        </p>
 
-      {/* 上方方框：英文 */}
-      <div className="w-80 p-6 border rounded-lg shadow text-center text-2xl font-bold bg-white">
-        {current.en}
+        {/* 上方方框：英文 */}
+        <div className="w-40 p-2 border rounded text-center text-lg font-bold bg-white">
+          {current.en}
+        </div>
+
+        {/* 下方方框：翻譯 */}
+        <div className="w-40 p-2 border rounded text-center text-base bg-gray-100">
+          {displayTransl}
+        </div>
+
+        {/* ✅ Icon 按鈕 */}
+        <div className="flex gap-3 mt-2">
+          <button
+            onClick={() => checkAnswer("same")}
+            className="w-10 h-10 flex items-center justify-center bg-green-500 text-white rounded"
+          >
+            <FaCheck size={18} />
+          </button>
+          <button
+            onClick={() => checkAnswer("different")}
+            className="w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded"
+          >
+            <FaTimes size={18} />
+          </button>
+        </div>
+
       </div>
-
-      {/* 下方方框：翻譯 */}
-      <div className="w-80 p-6 border rounded-lg shadow text-center text-xl bg-gray-100">
-        {displayTransl}
-      </div>
-
-      {/* 答案按鈕 */}
-      <div className="flex gap-4 mt-6">
-        <button
-          onClick={() => checkAnswer("same")}
-          className="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-        >
-          Same
-        </button>
-        <button
-          onClick={() => checkAnswer("different")}
-          className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-        >
-          Different
-        </button>
-      </div>
-
-      {/* 回饋 */}
-      {feedback && <p className="mt-4 text-lg">{feedback}</p>}
-    </div>
-  );
-};
+    );
+}
 
 export default Quiz;

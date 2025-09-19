@@ -4,12 +4,14 @@ import { db } from "../firebase";
 import { collection, getDocs, serverTimestamp, addDoc } from "firebase/firestore";
 import { auth } from '../firebase.js';
 import { onAuthStateChanged } from "firebase/auth";
+import { LoadingSpinner } from "../components/loadSpinner.jsx";
 
 const MyWord = () => {
   const navigate = useNavigate();
   const [wordBanks, setWordBanks] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [newName, setNewName] = useState("");
+  const [loading, setLoading] = useState(true);
   const [newDescription, setNewDescription] = useState("");
 
   useEffect(() => {
@@ -31,7 +33,9 @@ const MyWord = () => {
         setWordBanks(data);
       } catch (e) {
         console.error("Error loading word banks:", e);
-      }    
+      } finally {
+        setLoading(false);
+      }
     }
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -52,6 +56,7 @@ const MyWord = () => {
 
 
   const addWordBank = async () => {
+    const user = auth.currentUser;
     if (!newName.trim()) {
       alert("Please enter a word bank name!");
       return;
@@ -84,7 +89,7 @@ const MyWord = () => {
     }
   };
 
-  
+  if (loading) return <LoadingSpinner></LoadingSpinner>;
 
   return (
     <div className="p-4">
