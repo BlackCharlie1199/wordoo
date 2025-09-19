@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { db, auth } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { FaCheck, FaTimes } from "react-icons/fa";
+import { LoadingSpinner } from "../components/loadSpinner";
 
 const Quiz = () => {
   const { id } = useParams();

@@ -70,8 +70,12 @@ const Learn = () => {
   const currentCard = cards[currentIndex];
 
   return (
-    <div className="flex flex-col items-center mt-10">
-      <h2 className="text-gray-600 mb-4">{source}</h2>
+    <div className="flex flex-col items-center mt-5">
+      <h2 className="text-gray-600 mb-2">{source}</h2>
+
+      <p className="mt-4 text-gray-600">
+        {currentIndex + 1} / {cards.length}
+      </p>
 
       <div
         className="flip-card"
@@ -87,9 +91,6 @@ const Learn = () => {
         </div>
       </div>
 
-      <p className="mt-4 text-gray-600">
-        {currentIndex + 1} / {cards.length}
-      </p>
     </div>
   );
 };
