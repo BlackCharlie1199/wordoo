@@ -84,7 +84,7 @@ const Quiz = () => {
     setTotal((prev) => prev + 1);
     if (isCorrect) setScore((prev) => prev + 1);
 
-    setFeedback(isCorrect ? "✅ Correct!" : "❌ Wrong!");
+    setFeedback(isCorrect ? "✅" : "❌");
 
     setTimeout(() => {
       generateQuestion(words);
@@ -96,47 +96,51 @@ const Quiz = () => {
 
   return (
     <div className="p-2 flex flex-col items-center gap-3 text-sm min-h-screen">
-        {/* 回饋 */}
-        {feedback && <p className="mt-2 text-sm">{feedback}</p>}
-
-        {/* Score */}
-        <p className="text-sm text-gray-800">
-          Score: <span className="font-bold">{score}</span> / {total}
-          {total > 0 && (
-            <span className="ml-1 text-xs text-gray-600">
-              ({Math.round((score / total) * 100)}%)
-            </span>
-          )}
+      {/* 回饋 */}
+      <div className="h-6 flex items-center">
+        <p className={`text-sm transition-opacity duration-500 ${feedback ? "opacity-100" : "opacity-0" }`}>
+          {feedback}
         </p>
-
-        {/* 上方方框：英文 */}
-        <div className="w-40 p-2 border rounded text-center text-lg font-bold bg-white">
-          {current.en}
-        </div>
-
-        {/* 下方方框：翻譯 */}
-        <div className="w-40 p-2 border rounded text-center text-base bg-gray-100">
-          {displayTransl}
-        </div>
-
-        {/* ✅ Icon 按鈕 */}
-        <div className="flex gap-3 mt-2">
-          <button
-            onClick={() => checkAnswer("same")}
-            className="w-10 h-10 flex items-center justify-center bg-green-500 text-white rounded"
-          >
-            <FaCheck size={18} />
-          </button>
-          <button
-            onClick={() => checkAnswer("different")}
-            className="w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded"
-          >
-            <FaTimes size={18} />
-          </button>
-        </div>
-
       </div>
-    );
+
+      {/* Score */}
+      <p className="text-sm text-gray-800">
+        Score: <span className="font-bold">{score}</span> / {total}
+        {total > 0 && (
+          <span className="ml-1 text-xs text-gray-600">
+            ({Math.round((score / total) * 100)}%)
+          </span>
+        )}
+      </p>
+
+      {/* 上方方框：英文 */}
+      <div className="w-40 p-2 border rounded text-center text-lg font-bold bg-white">
+        {current.en}
+      </div>
+
+      {/* 下方方框：翻譯 */}
+      <div className="w-40 p-2 border rounded text-center text-base bg-gray-100">
+        {displayTransl}
+      </div>
+
+      {/* ✅ Icon 按鈕 */}
+      <div className="flex gap-3 mt-2">
+        <button
+          onClick={() => checkAnswer("same")}
+          className="w-10 h-10 flex items-center justify-center bg-green-500 text-white rounded"
+        >
+          <FaCheck size={18} />
+        </button>
+        <button
+          onClick={() => checkAnswer("different")}
+          className="w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded"
+        >
+          <FaTimes size={18} />
+        </button>
+      </div>
+
+    </div>
+  );
 }
 
 export default Quiz;

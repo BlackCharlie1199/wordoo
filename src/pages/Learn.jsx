@@ -70,7 +70,7 @@ const Learn = () => {
   const currentCard = cards[currentIndex];
 
   return (
-    <div className="flex flex-col items-center mt-5">
+    <div className="flex flex-col items-center mt-3">
       <h2 className="text-gray-600 mb-2">{source}</h2>
 
       <p className="text-gray-600 mb-6">

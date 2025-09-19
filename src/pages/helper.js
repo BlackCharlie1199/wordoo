@@ -14,7 +14,7 @@ export const saveUserLanguage = async (lang) => {
 export const loadUserLanguage = async () => {
 
   // if the user hasn't logged in we just use the lang in the local storage
-  let user_lang = localStorage.getItem("language") || "en";
+  let user_lang = localStorage.getItem("language") || "id";
   if (!auth.currentUser) return user_lang;  
 
   // get uid of current user
@@ -23,7 +23,7 @@ export const loadUserLanguage = async () => {
   try {
     const snap = await getDoc(doc(db, "users", uid));
     if (snap.exists()) {
-      user_lang = snap.data().language || "en";
+      user_lang = snap.data().language || "id";
     } else {
       saveUserLanguage(user_lang);
     }

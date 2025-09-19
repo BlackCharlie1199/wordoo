@@ -25,7 +25,6 @@ const Setting = () => {
       <label className="block mt-4 text-[12pt]">
         Choose Language:
         <select value={language} onChange={handleChange} className="ml-2 p-1 border">
-          <option value="en">English</option>
           <option value="vi">Tiếng Việt</option>
           <option value="th">ไทย</option>
           <option value="id">Bahasa Indonesia</option>

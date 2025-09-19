@@ -14,6 +14,8 @@ const WordBank = () => {
   const [showModal, setShowModal] = useState(false);
   const [showTranslation, setShowTranslation] = useState(null);
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showAddWordModal, setShowAddWordModal] = useState(false);
+  const [showAnim, setShowAnim] = useState(false);
   const [enWord, setEnWord] = useState("");
   const [translWord, setTranslWord] = useState("");
   const userLang = localStorage.getItem("language") || "transl";
@@ -69,6 +71,14 @@ const WordBank = () => {
     }
   }, [id]);
 
+  useEffect(() => {
+    if (showModal) {
+      setTimeout(() => setShowAnim(true), 10);
+    } else {
+      setShowAnim(false);
+    }
+  }, [showModal]);
+
   const addWord = async () => {
     if (!enWord.trim()) {
       alert("Please enter an English word!");
@@ -82,8 +92,6 @@ const WordBank = () => {
       if (user) {
         wordsColRef = collection(db, "users", user.uid, "wordbanks", id, "words");
       }
-
-      userLang = localStorage.getItem("language");
 
       await addDoc(wordsColRef, {
         en: enWord,
@@ -105,11 +113,11 @@ const WordBank = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="p-6">
+    <div className="px-4 pt-2">
       {bankInfo && (
         <>
-          <h1 className="text-2xl font-bold mb-2">{bankInfo.name}</h1>
-          <p className="text-gray-600 mb-6">{bankInfo.description}</p>
+          <h1 className="text-xl font-bold mb-1">{bankInfo.name}</h1>
+          <p className="text-gray-600 mb-3">{bankInfo.description}</p>
         </>
       )}
 
@@ -117,7 +125,7 @@ const WordBank = () => {
         {words.map((word) => (
           <li
             key={`${word.id}-${word.en}`}
-            className="w-60 p-3 border rounded shadow-sm bg-white flex flex-col justify-center" 
+            className="w-full max-w-[200px] p-2 border rounded bg-white flex flex-col justify-center items-center mx-auto"
           >
             <p className="font-semibold text-center">{word.en}</p>
             <p className="text-gray-700 text-center">{word[userLang]}</p>
@@ -125,70 +133,23 @@ const WordBank = () => {
         ))}
       </ul>
       {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-bold mb-4">Add a New Word</h2>
-
-            <input
-              type="text"
-              placeholder="en"
-              value={enWord}
-              onChange={(e) => setEnWord(e.target.value)}
-              className="w-full p-2 border rounded mb-3"
-            />
-
-            <textarea
-              placeholder={localStorage.getItem("language")}
-              value={translWord}
-              onChange={(e) => setTranslWord(e.target.value)}
-              className="w-full p-2 border rounded mb-4"
-            />
-
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={() => setShowModal(false)}
-                className="px-4 py-2 border rounded hover:bg-gray-100"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={addWord}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
       {showReviewModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-bold mb-4">Review settings</h2>
+          <div className="w-72 bg-white rounded-lg p-4 shadow-lg">
+            <h2 className="text-lg font-bold mb-4 text-center">Review settings</h2>
 
-            {/* 模式選擇 */}
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <button className="p-3 border rounded hover:bg-gray-100" onClick={() => navigate(`/quiz/${id}`)}>Flip</button>
-              <button className="p-3 border rounded hover:bg-gray-100" >Spelling</button>
-              <button className="p-3 border rounded hover:bg-gray-100" onClick={() => navigate(`/learn/${id}`)}>True or False</button>
+            <div className="flex flex-col gap-2 mb-4">
+              <button className="p-2 border rounded hover:bg-gray-100" onClick={() => { navigate(`/learn/${id}`) }}>Flip</button>
+              <button className="p-2 border rounded hover:bg-gray-100" onClick={() => { navigate(`/spell/${id}`) }}>Spelling</button>
+              <button className="p-2 border rounded hover:bg-gray-100" onClick={() => { navigate(`/quiz/${id}`) }}>True or False</button>
             </div>
 
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-end gap-2">
               <button
                 onClick={() => setShowReviewModal(false)}
-                className="px-4 py-2 border rounded hover:bg-gray-100"
+                className="px-3 py-1 border rounded hover:bg-gray-100"
               >
                 Cancel
-              </button>
-              <button
-                onClick={() => {
-                  setShowReviewModal(false);
-                  navigate("/review"); // TODO: 這裡可以依照選的模式導去不同頁
-                }}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                Start practice
               </button>
             </div>
           </div>

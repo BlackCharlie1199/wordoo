@@ -1,4 +1,4 @@
-import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import { FaPlus, FaBook} from 'react-icons/fa';
 import Home from './pages/Home';
@@ -8,6 +8,7 @@ import WordBank from './pages/WordBank';
 import Quiz from './pages/Quiz';
 import Review from "./pages/Review";
 import Learn from './pages/Learn';
+import Spell from './pages/Spell';
 import './index.css';
 import './styles/header.css';
 import './styles/footer.css';
@@ -22,10 +23,9 @@ const App = () => {
     loadUserLanguage();
   }, []);
   
-  const navigate = useNavigate();
 
   return (
-    <>
+    <div className="overflow-x-hidden">
       {/* Header Component */}
       <header className="header-title">
         <Link to="/">Wordoo</Link>
@@ -41,6 +41,7 @@ const App = () => {
           <Route path="/review" element={<Review />} />
           <Route path="/quiz/:id" element={<Quiz />} />
           <Route path="/learn/:id" element={<Learn />} />
+          <Route path="/spell/:id" element={<Spell />} />
         </Routes>
       </main>
 
@@ -70,7 +71,7 @@ const App = () => {
           </div>
         )}
       </footer>
-    </>
+    </div>
   )
 };
 
