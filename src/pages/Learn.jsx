@@ -73,7 +73,7 @@ const Learn = () => {
     <div className="flex flex-col items-center mt-5">
       <h2 className="text-gray-600 mb-2">{source}</h2>
 
-      <p className="mt-4 text-gray-600">
+      <p className="text-gray-600 mb-6">
         {currentIndex + 1} / {cards.length}
       </p>
 
