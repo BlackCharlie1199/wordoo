@@ -4,75 +4,85 @@ import { db, auth } from "../firebase";
 import { collection, getDocs, query, where, limit } from "firebase/firestore";
 import { LoadingSpinner } from "../components/loadSpinner";
 import { loadWords } from "../components/loadWords";
+import ResultScreen from "../components/resultScreen.jsx";
 
 const Spell = () => {
   const { id } = useParams();
   const [words, setWords] = useState([]);
-  const [current, setCurrent] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0); // ✅ 修改：用 index 控制題目順序
   const [input, setInput] = useState("");
   const [feedback, setFeedback] = useState("");
   const [loading, setLoading] = useState(true);
-  const [total, setTotal] = useState(0); // 已作答題數
-  const [score, setScore] = useState(0); // 答對數
-  const [finished, setFinished] = useState(false);
+  const [score, setScore] = useState(0); // ✅ 修改：答對數
+  const [total, setTotal] = useState(0); // ✅ 修改：總題數
+  const [finished, setFinished] = useState(false); // ✅ 修改：是否結束
+  const [wrongWords, setWrongWords] = useState([]); // ✅ 新增：答錯單字收集
   const userLang = localStorage.getItem("language") || "transl";
-
-  // add a helper function to pick the problem randomly
-  const generateQuestion = (wordList) => {
-    const randomWord = wordList[Math.floor(Math.random() * wordList.length)];
-    setCurrent(randomWord);
-  };
 
   useEffect(() => {
     const fetchWords = async () => {
-      try {
-        setLoading(true);
-        const wordList = await loadWords(id, { random: true, limitNum: 15 });
-        setWords(wordList);
-
-        if (wordList.length > 0) {
-          generateQuestion(wordList); // use the generateQuestion func. dedfned above.
-        }
-      } catch (e) {
-        console.error("Error in fetchWords:", e); //output ERROR
-      } finally {
-        setLoading(false); // ✅ 放到 finally，避免出錯時 loading 卡死
-      }
+      setLoading(true);
+      const wordList = await loadWords(id, { random: true, limitNum: 15 }); // ✅ 修改：隨機取 15 個
+      setWords(wordList);
+      setLoading(false);
     };
-
     fetchWords();
   }, [id]);
+
+  const current = words[currentIndex]; // ✅ 修改：取得目前題目
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!current) return;
 
     if (input.trim().toLowerCase() === current.en.toLowerCase()) {
-      // ✅ 答對才算一題
       setScore((prev) => prev + 1);
       setTotal((prev) => prev + 1);
-
       setFeedback("✅ Correct!");
       setTimeout(() => {
         setInput("");
         setFeedback("");
-        setCurrent(words[Math.floor(Math.random() * words.length)]);
-      }, 800);
+
+        if (currentIndex + 1 >= words.length) { // ✅ 修改：超過 15 題 → 結算
+          setFinished(true);
+        } else {
+          setCurrentIndex(currentIndex + 1); // ✅ 修改：跳到下一題
+        }
+      }, 500);
     } else {
-      // ❌ 答錯先顯示正確答案，但不加 total
-      setFeedback(`❌ ${current.en}`);
+      setFeedback(`❌ ${current.en}`); // ✅ 修改：答錯時停留，顯示正確答案
+      setWrongWords((prev) => 
+        prev.some(item => item.en === current.en) ? prev :[ ...prev, current]
+      ); // 加入錯誤單字列表
     }
   };
+
+  console.log(wrongWords);
 
   const handleChange = (e) => {
     setInput(e.target.value);
-    // 一旦使用者重新輸入 → 清掉提示
-    if (feedback.startsWith("❌")) {
-      setFeedback("");
-    }
+    // ✅ 修改：答錯提示保留直到答對
   };
 
   if (loading) return <LoadingSpinner />;
+
+  if (finished) { // ✅ 修改：結算畫面
+    return (
+      <ResultScreen
+        score={score}
+        total={words.length}
+        wrongWords={wrongWords}
+        onRetryWrong={() => {
+          setWords(wrongWords); // ✅ 修改：只重做答錯的單字
+          setCurrentIndex(0); // ✅ 修改：重新從第一題開始
+          setTotal(0);
+          setScore(0);
+          setFinished(false);
+          setWrongWords([]);
+        }}
+      />
+    );
+  }
 
   if (!current) return <p>No words available</p>;
 
