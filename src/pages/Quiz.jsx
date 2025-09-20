@@ -5,6 +5,8 @@ import { collection, getDocs, query, where, limit } from "firebase/firestore";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { LoadingSpinner } from "../components/loadSpinner";
 import ResultScreen from "../components/resultScreen.jsx";
+import { loadWords } from "../components/loadWords";
+
 
 const Quiz = () => {
   const { id } = useParams();
@@ -21,53 +23,21 @@ const Quiz = () => {
   const [wrongWords, setWrongWords] = useState([]);
 
   useEffect(() => {
-    const loadWords = async () => {
-      try {
-        const user = auth.currentUser;
-        let wordsRef;
-        let snap;
+    const fetchWords = async () => {
+      setLoading(true);
+      const wordList = await loadWords(id, { random: true, limitNum: 15 });
+      setWords(wordList);
 
-        const r = Math.random();
-
-        if (user) {
-          wordsRef = collection(db, "users", user.uid, "wordbanks", id, "words");
-          const q = query(wordsRef, where("rand", ">=", r), limit(15));
-          snap = await getDocs(q);
-
-          if (snap.size < 15) {
-            const q2 = query(wordsRef, where("rand", "<", r), limit(15 - snap.size));
-            const snap2 = await getDocs(q2);
-            snap = { docs: [...snap.docs, ...snap2.docs] };
-          }
-        }
-
-        if (!snap || snap.empty) {
-          wordsRef = collection(db, "wordbanks", id, "words");
-          const q = query(wordsRef, where("rand", ">=", r), limit(15));
-          snap = await getDocs(q);
-
-          if (snap.size < 15) {
-            const q2 = query(wordsRef, where("rand", "<", r), limit(15 - snap.size));
-            const snap2 = await getDocs(q2);
-            snap = { docs: [...snap.docs, ...snap2.docs] };
-          }
-        }
-
-        const wordList = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        setWords(wordList);
-
-        if (wordList.length > 0) {
-          generateQuestion(wordList);
-        }
-      } catch (e) {
-        console.error("Error loading words:", e);
-      } finally {
-        setLoading(false);
+      if (wordList.length > 0) {
+        generateQuestion(wordList);
       }
+
+      setLoading(false);
     };
 
-    loadWords();
+    fetchWords();
   }, [id]);
+
 
   const getRandomWord = (list, excludeId = null) => {
     const filtered = excludeId ? list.filter((w) => w.id !== excludeId) : list;

@@ -1,9 +1,12 @@
 // src/pages/Learn.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { db ,auth } from "../firebase";
-import { collection, getDocs, query, where, limit } from "firebase/firestore";
+//import { db ,auth } from "../firebase";
+//import { collection, getDocs, query, where, limit } from "firebase/firestore";
 import "../styles/Learn.css"; 
+import { loadWords } from "../components/loadWords";
+import { LoadingSpinner } from "../components/loadSpinner";
+
 
 const Learn = () => {
   const { id } = useParams(); // wordbank id
@@ -16,51 +19,19 @@ const Learn = () => {
   const userLang = localStorage.getItem("language") || "transl";
 
   useEffect(() => {
-    const r = Math.random();
-    const loadCards = async () => {
-
+    const fetchCards = async () => {
+      setLoading(true); // loading
       try {
-        const user = auth.currentUser;
-        let wordsRef;
-        let snap;
-
-        const r = Math.random();
-
-        if (user) {
-          wordsRef = collection(db, "users", user.uid, "wordbanks", id, "words");
-          const q = query(wordsRef, where("rand", ">=", r), limit(15));
-          snap = await getDocs(q);
-
-          if (snap.size < 15) {
-            const q2 = query(wordsRef, where("rand", "<", r), limit(15 - snap.size));
-            const snap2 = await getDocs(q2);
-            snap = { docs: [...snap.docs, ...snap2.docs] };
-          }
-        }
-
-        if (!snap || snap.empty) {
-          wordsRef = collection(db, "wordbanks", id, "words");
-          const q = query(wordsRef, where("rand", ">=", r), limit(15));
-          snap = await getDocs(q);
-
-          if (snap.size < 15) {
-            const q2 = query(wordsRef, where("rand", "<", r), limit(15 - snap.size));
-            const snap2 = await getDocs(q2);
-            snap = { docs: [...snap.docs, ...snap2.docs] };
-          }
-        }
-
-        const wordList = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        // call loadWords in "../components/loadWords"
+        const wordList = await loadWords(id, { random: true, limitNum: 15 });
         setCards(wordList);
-
       } catch (e) {
         console.error("Error loading words:", e);
       } finally {
         setLoading(false);
       }
     };
-
-    loadCards();
+    fetchCards();
   }, [id]);
 
   // 鍵盤左右切換
@@ -84,6 +55,8 @@ const Learn = () => {
 
 
   if (loading) return <LoadingSpinner></LoadingSpinner>;
+  console.log(cards);
+  console.log(userLang);
 
   const currentCard = cards[currentIndex];
   
@@ -104,7 +77,7 @@ const Learn = () => {
             {currentCard.en}
           </div>
           <div className="flip-card-back">
-            {currentCard[userLang]}  {/* ✅ 改這裡 */}
+            {currentCard[userLang]}  {/* ✅ 使用語言偏好 */}
           </div>
         </div>
       </div>

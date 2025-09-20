@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { db, auth } from "../firebase";
 import { collection, getDocs, query, where, limit } from "firebase/firestore";
 import { LoadingSpinner } from "../components/loadSpinner";
+import { loadWords } from "../components/loadWords";
 
 const Spell = () => {
   const { id } = useParams();
@@ -16,53 +17,30 @@ const Spell = () => {
   const [finished, setFinished] = useState(false);
   const userLang = localStorage.getItem("language") || "transl";
 
+  // add a helper function to pick the problem randomly
+  const generateQuestion = (wordList) => {
+    const randomWord = wordList[Math.floor(Math.random() * wordList.length)];
+    setCurrent(randomWord);
+  };
+
   useEffect(() => {
-
-    const r = Math.random();
-
-    const loadWords = async () => {
+    const fetchWords = async () => {
       try {
-        const user = auth.currentUser;
-        let wordsRef, snap;
+        setLoading(true);
+        const wordList = await loadWords(id, { random: true, limitNum: 15 });
+        setWords(wordList);
 
-        if (user) {
-          wordsRef = collection(db, "users", user.uid, "wordbanks", id, "words");
-          const q = query(wordsRef, where("rand", ">=", r), limit(15));
-          snap = await getDocs(q);
-
-          if (snap.size < 15) {
-            const q2 = query(wordsRef, where("rand", "<", r), limit(15 - snap.size));
-            const snap2 = await getDocs(q2);
-            snap = { docs: [...snap.docs, ...snap2.docs] };
-          }
-        }
-
-        if (!snap || snap.empty) {
-          wordsRef = collection(db, "wordbanks", id, "words");
-          const q = query(wordsRef, where("rand", ">=", r), limit(15));
-          snap = await getDocs(q);
-
-          if (snap.size < 15) {
-            const q2 = query(wordsRef, where("rand", "<", r), limit(15 - snap.size));
-            const snap2 = await getDocs(q2);
-            snap = { docs: [...snap.docs, ...snap2.docs] };
-          }
-        }
-
-        const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        setWords(list);
-
-        if (list.length > 0) {
-          setCurrent(list[Math.floor(Math.random() * list.length)]);
+        if (wordList.length > 0) {
+          generateQuestion(wordList); // use the generateQuestion func. dedfned above.
         }
       } catch (e) {
-        console.error("Error loading spell words:", e);
+        console.error("Error in fetchWords:", e); //output ERROR
       } finally {
-        setLoading(false);
+        setLoading(false); // ✅ 放到 finally，避免出錯時 loading 卡死
       }
     };
 
-    loadWords();
+    fetchWords();
   }, [id]);
 
   const handleSubmit = (e) => {
