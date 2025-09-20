@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db, auth } from "../firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where, limit } from "firebase/firestore";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { LoadingSpinner } from "../components/loadSpinner";
 
@@ -24,16 +24,30 @@ const Quiz = () => {
         let wordsRef;
         let snap;
 
+        const r = Math.random();
+
         if (user) {
           wordsRef = collection(db, "users", user.uid, "wordbanks", id, "words");
-          snap = await getDocs(wordsRef);
-          if (!snap.empty) setSource("My WordBank");
+          const q = query(wordsRef, where("rand", ">=", r), limit(15));
+          snap = await getDocs(q);
+
+          if (snap.size < 15) {
+            const q2 = query(wordsRef, where("rand", "<", r), limit(15 - snap.size));
+            const snap2 = await getDocs(q2);
+            snap = { docs: [...snap.docs, ...snap2.docs] };
+          }
         }
 
         if (!snap || snap.empty) {
           wordsRef = collection(db, "wordbanks", id, "words");
-          snap = await getDocs(wordsRef);
-          if (!snap.empty) setSource("Default WordBank");
+          const q = query(wordsRef, where("rand", ">=", r), limit(15));
+          snap = await getDocs(q);
+
+          if (snap.size < 15) {
+            const q2 = query(wordsRef, where("rand", "<", r), limit(15 - snap.size));
+            const snap2 = await getDocs(q2);
+            snap = { docs: [...snap.docs, ...snap2.docs] };
+          }
         }
 
         const wordList = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
@@ -98,19 +112,14 @@ const Quiz = () => {
     <div className="p-2 flex flex-col items-center gap-3 text-sm min-h-screen">
       {/* 回饋 */}
       <div className="h-6 flex items-center">
-        <p className={`text-sm transition-opacity duration-500 ${feedback ? "opacity-100" : "opacity-0" }`}>
+        <p className={`text-sm transition-opacity duration-500 ${feedback ? "opacity-100" : "opacity-0"}`}>
           {feedback}
         </p>
       </div>
 
       {/* Score */}
       <p className="text-sm text-gray-800">
-        Score: <span className="font-bold">{score}</span> / {total}
-        {total > 0 && (
-          <span className="ml-1 text-xs text-gray-600">
-            ({Math.round((score / total) * 100)}%)
-          </span>
-        )}
+        <span className="font-bold">{total}</span> / {words.length}
       </p>
 
       {/* 上方方框：英文 */}

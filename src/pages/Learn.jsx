@@ -2,8 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db ,auth } from "../firebase";
-import { collection, getDocs } from "firebase/firestore";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, query, where, limit } from "firebase/firestore";
 import "../styles/Learn.css"; 
 
 const Learn = () => {
@@ -12,32 +11,51 @@ const Learn = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [source, setSource] = useState("");
+  const [loading, setLoading] = useState(true);
   const userLang = localStorage.getItem("language") || "transl";
 
   useEffect(() => {
+    const r = Math.random();
     const loadCards = async () => {
+
       try {
         const user = auth.currentUser;
+        let wordsRef;
         let snap;
 
+        const r = Math.random();
+
         if (user) {
-          // 先找使用者的 wordbank/words
-          const userWordsRef = collection(db, "users", user.uid, "wordbanks", id, "words");
-          snap = await getDocs(userWordsRef);
-          if (!snap.empty) setSource("My WordBank");
+          wordsRef = collection(db, "users", user.uid, "wordbanks", id, "words");
+          const q = query(wordsRef, where("rand", ">=", r), limit(15));
+          snap = await getDocs(q);
+
+          if (snap.size < 15) {
+            const q2 = query(wordsRef, where("rand", "<", r), limit(15 - snap.size));
+            const snap2 = await getDocs(q2);
+            snap = { docs: [...snap.docs, ...snap2.docs] };
+          }
         }
 
         if (!snap || snap.empty) {
-          // 如果使用者沒有 → 撈 default wordbanks/words
-          const defaultWordsRef = collection(db, "wordbanks", id, "words");
-          snap = await getDocs(defaultWordsRef);
-          if (!snap.empty) setSource("Default WordBank");
+          wordsRef = collection(db, "wordbanks", id, "words");
+          const q = query(wordsRef, where("rand", ">=", r), limit(15));
+          snap = await getDocs(q);
+
+          if (snap.size < 15) {
+            const q2 = query(wordsRef, where("rand", "<", r), limit(15 - snap.size));
+            const snap2 = await getDocs(q2);
+            snap = { docs: [...snap.docs, ...snap2.docs] };
+          }
         }
 
         const wordList = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
         setCards(wordList);
-      } catch (err) {
-        console.error("Error loading cards:", err);
+
+      } catch (e) {
+        console.error("Error loading words:", e);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -68,6 +86,7 @@ const Learn = () => {
   }
 
   const currentCard = cards[currentIndex];
+  if (loading) return <LoadingSpinner></LoadingSpinner>;
 
   return (
     <div className="flex flex-col items-center mt-3">
