@@ -17,21 +17,22 @@ import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
 
-  apiKey: "AIzaSyDN0V2I8xXcVZRiwqyi6LZGxXROvUqgtoI",
+  apiKey: "AIzaSyCH4kZjBgscCKF_qLpoNUfiud4LGqN8inI",
 
-  authDomain: "wordoo-5eacd.firebaseapp.com",
+  authDomain: "wordoo-fdf60.firebaseapp.com",
 
-  projectId: "wordoo-5eacd",
+  projectId: "wordoo-fdf60",
 
-  storageBucket: "wordoo-5eacd.firebasestorage.app",
+  storageBucket: "wordoo-fdf60.firebasestorage.app",
 
-  messagingSenderId: "279553040079",
+  messagingSenderId: "35025423999",
 
-  appId: "1:279553040079:web:0fdfe5b78754025cafe1ba",
+  appId: "1:35025423999:web:8f0e0817f613b47a0a394a",
 
-  measurementId: "G-YF54XDVDW4"
+  measurementId: "G-D5S5NYPL36"
 
 };
+
 
 
 // Initialize Firebase
