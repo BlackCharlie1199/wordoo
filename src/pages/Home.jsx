@@ -5,10 +5,15 @@ import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from
 import { GoogleSignInButton, GoogleSignOutButton} from "../components/GoogleButton";
 import { auth } from "../firebase";
 import { loadUserLanguage } from './helper';
+//translate
+import { useTranslation } from "react-i18next";
+
 
 const Home = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const { t } = useTranslation();
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -35,12 +40,12 @@ const Home = () => {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <Button onClick={() => navigate('/myword')} cssClass="btn btn-green">MyWord</Button>
-      <Button onClick={() => navigate('/setting')} cssClass="btn btn-gray">Setting</Button>
+      <Button onClick={() => navigate('/myword')} cssClass="btn btn-green">{t("myWord")} {/* ✅ 使用翻譯 key */}</Button>
+      <Button onClick={() => navigate('/setting')} cssClass="btn btn-gray">{t("setting")}</Button>
       {user ? (
-        <GoogleSignOutButton onClick={handleSignOut}>SignOut</GoogleSignOutButton>
+        <GoogleSignOutButton onClick={handleSignOut}>{t("signOut")}</GoogleSignOutButton>
       ) : (
-        <GoogleSignInButton onClick={handleLogin} cssClass="btn btn-green">Sign with Google</GoogleSignInButton>
+        <GoogleSignInButton onClick={handleLogin} cssClass="btn btn-green">{t("signInWithGoogle")}</GoogleSignInButton>
       )}
       
     </div>
@@ -48,3 +53,4 @@ const Home = () => {
 };
 
 export default Home;
+

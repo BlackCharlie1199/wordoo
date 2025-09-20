@@ -5,6 +5,10 @@ import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { LoadingSpinner } from "../components/loadSpinner";
+//translate
+import { useTranslation } from "react-i18next";
+import { loadWords } from "../components/loadWords";
+
 
 const WordBank = () => {
   const { id } = useParams();
@@ -21,29 +25,53 @@ const WordBank = () => {
   const userLang = localStorage.getItem("language") || "transl";
   const navigate = useNavigate();
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     const load = async (user) => {
       try {
-        let bankRef, bankSnap, wordsRef, wordsSnap;
+        const cacheKey = `selectedWords-${id}`;
+        const cached = localStorage.getItem(cacheKey);
 
-        if (user) {
-          bankRef = doc(db, "users", user.uid, "wordbanks", id);
-          bankSnap = await getDoc(bankRef);
-          wordsRef = collection(db, "users", user.uid, "wordbanks", id, "words");
-          wordsSnap = await getDocs(wordsRef);
+        if (cached) {
+          // 已經選過，直接用這批
+          
+
+
+
+          console.log(cached);
+
+
+
+
+
+          setWords(JSON.parse(cached));
+          return;
+        }
+        if (id === "default") {
+          setBankInfo({
+            name: "Default Word Bank",
+            description: "Basic 1200 words",
+          });
+
+        } else {
+          if (user) {
+            bankRef = doc(db, "users", user.uid, "wordbanks", id);
+            bankSnap = await getDoc(bankRef);
+          }
+          if (!bankSnap || !bankSnap.exists()) {
+            bankRef = doc(db, "wordbanks", id);
+            bankSnap = await getDoc(bankRef);
+          }
+          if (bankSnap.exists()) setBankInfo(bankSnap.data());
         }
 
-        if (!bankSnap || !bankSnap.exists()) {
-          bankRef = doc(db, "wordbanks", id);
-          bankSnap = await getDoc(bankRef);
-          wordsRef = collection(db, "wordbanks", id, "words");
-          wordsSnap = await getDocs(wordsRef);
-        }
+        const words = await loadWords(id, { random: true, limitNum: 30 });
+        setWords(words.map((w, i) => ({ id: i.toString(), ...w })));
 
-        if (bankSnap.exists()) setBankInfo(bankSnap.data());
-        if (!wordsSnap.empty) {
-          setWords(wordsSnap.docs.map((d) => ({ id: d.id, ...d.data() })));
-        }
+        localStorage.setItem(cacheKey, JSON.stringify(words));
+
+        return;
       } catch (e) {
         console.error("Error loading word bank: ", e);
       } finally {
@@ -125,10 +153,23 @@ const WordBank = () => {
         {words.map((word) => (
           <li
             key={`${word.id}-${word.en}`}
-            className="w-full max-w-[200px] p-2 border rounded bg-white flex flex-col justify-center items-center mx-auto"
+            className="w-full sm:w-[250px] md:w-[300px] p-4 border rounded-lg shadow bg-white flex flex-col items-center"
           >
+            {/* 英文字 */}
             <p className="font-semibold text-center">{word.en}</p>
+
+            {/* 翻譯 */}
             <p className="text-gray-700 text-center">{word[userLang]}</p>
+
+            {/* ✅ 重要性 Progress Bar */}
+            <div className="mt-2 w-full">
+              <div className="w-full bg-gray-200 rounded h-2">
+                <div
+                  className="bg-red-500 h-2 rounded"
+                  style={{ width: `${Math.min(100, (word.importance ?? 0) * 20)}%` }}
+                ></div>
+              </div>
+            </div>
           </li>
         ))}
       </ul>
@@ -136,12 +177,12 @@ const WordBank = () => {
       {showReviewModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="w-72 bg-white rounded-lg p-4 shadow-lg">
-            <h2 className="text-lg font-bold mb-4 text-center">Review settings</h2>
+            <h2 className="text-lg font-bold mb-4 text-center">{t("reviewSettings")}</h2>
 
             <div className="flex flex-col gap-2 mb-4">
-              <button className="p-2 border rounded hover:bg-gray-100" onClick={() => { navigate(`/learn/${id}`) }}>Flip</button>
-              <button className="p-2 border rounded hover:bg-gray-100" onClick={() => { navigate(`/spell/${id}`) }}>Spelling</button>
-              <button className="p-2 border rounded hover:bg-gray-100" onClick={() => { navigate(`/quiz/${id}`) }}>True or False</button>
+              <button className="p-2 border rounded hover:bg-gray-100" onClick={() => { navigate(`/learn/${id}`) }}>{t("flip")}</button>
+              <button className="p-2 border rounded hover:bg-gray-100" onClick={() => { navigate(`/spell/${id}`) }}>{t("spelling")}</button>
+              <button className="p-2 border rounded hover:bg-gray-100" onClick={() => { navigate(`/quiz/${id}`) }}>{t("trueOrFalse")}</button>
             </div>
 
             <div className="flex justify-end gap-2">
@@ -149,7 +190,7 @@ const WordBank = () => {
                 onClick={() => setShowReviewModal(false)}
                 className="px-3 py-1 border rounded hover:bg-gray-100"
               >
-                Cancel
+                {t("cancel")}
               </button>
             </div>
           </div>

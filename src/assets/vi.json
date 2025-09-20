@@ -1,0 +1,21 @@
+{
+  "myWord": "Từ của tôi",
+  "setting": "Cài đặt",
+  "signOut": "Đăng xuất",
+  "signInWithGoogle": "Đăng nhập bằng Google",
+  "submit": "Gửi",
+  "correct": "Đúng!",
+  "wrong": "Sai",
+  "progress": "{{current}} / {{total}}",
+  "placeholder": "Nhập câu trả lời của bạn",
+  "selectLanguage": "Chọn ngôn ngữ",
+  "settingPage": "Trang cài đặt",
+  "flip": "Lật",
+  "spelling": "Chính tả",
+  "trueOrFalse": "Đúng hay Sai",
+  "reviewSettings": "Cài đặt ôn tập",
+  "cancel": "Hủy",
+  "reviewWrongWords": "Ôn tập từ sai",
+  "backToWordBanks": "Quay lại Ngân hàng Từ",
+  "sessionFinished": "Phiên học kết thúc!"
+}

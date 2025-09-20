@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { db, auth } from "../firebase";
-import { collection, getDocs, query, where, limit } from "firebase/firestore";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { LoadingSpinner } from "../components/loadSpinner";
 import ResultScreen from "../components/resultScreen.jsx";
-import { loadWords } from "../components/loadWords";
+//translate
+import { useTranslation } from "react-i18next";
+import { updateWordStats } from "../components/updateWordStats.jsx";
 
 
 const Quiz = () => {
@@ -14,28 +14,26 @@ const Quiz = () => {
   const [current, setCurrent] = useState(null);
   const [displayTransl, setDisplayTransl] = useState("");
   const [feedback, setFeedback] = useState("");
-  const [source, setSource] = useState("");
   const [loading, setLoading] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0); // ✅ 答對數
-  const [total, setTotal] = useState(0); // ✅ 總題數
   const userLang = localStorage.getItem("language") || "transl";
   const [finished, setFinished] = useState(false);
   const [wrongWords, setWrongWords] = useState([]);
 
+  const { t } = useTranslation();
+
   useEffect(() => {
-    const fetchWords = async () => {
-      setLoading(true);
-      const wordList = await loadWords(id, { random: true, limitNum: 15 });
-      setWords(wordList);
-
-      if (wordList.length > 0) {
-        generateQuestion(wordList);
+    const cacheKey = `selectedWords-${id}`;
+    const saved = localStorage.getItem(cacheKey);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      setWords(parsed);
+      if (parsed.length > 0) {
+        generateQuestion(parsed);
       }
-
-      setLoading(false);
-    };
-
-    fetchWords();
+    }
+    setLoading(false);
   }, [id]);
 
 
@@ -60,25 +58,41 @@ const Quiz = () => {
     setDisplayTransl(chosenTransl);
   };
 
-  const checkAnswer = (userChoice) => {
+  const checkAnswer = async (userChoice) => {
     if (!current) return;
 
     const isCorrect =
       (userChoice === "same" && current.isAnswerCorrect) ||
       (userChoice === "different" && !current.isAnswerCorrect);
 
-    // ✅ 更新計分
-    setTotal((prev) => prev + 1);
+    setCurrentIndex((prev) => prev + 1);
+
     if (isCorrect) {
       setScore((prev) => prev + 1);
+      // ✅ 更新 stats
+      const updatedWord = await updateWordStats(id, current, true);
+      setWords((prev) => {
+        const updated = prev.map((w) => (w.id === current.id ? updatedWord : w));
+        localStorage.setItem(`selectedWords-${id}`, JSON.stringify(updated)); // 🔥 加這行
+        return updated;
+      });
+
     } else {
-      setWrongWords((prev) => [...prev, current]);
+      setWrongWords((prev) =>
+        prev.some((w) => w.en === current.en) ? prev : [...prev, current]
+      );
+
+      // ✅ 更新 stats
+      const updatedWord = await updateWordStats(id, current, false);
+      setWords((prev) =>
+        prev.map((w) => (w.id === current.id ? updatedWord : w))
+      );
     }
 
     setFeedback(isCorrect ? "✅" : "❌");
 
     setTimeout(() => {
-      if (total + 1 >= words.length) {
+      if (currentIndex + 1 >= words.length) {
         setFinished(true);
       } else {
         generateQuestion(words);
@@ -97,10 +111,11 @@ const Quiz = () => {
         wrongWords={wrongWords}
         onRetryWrong={() => {
           setWords(wrongWords);
-          setTotal(0);
           setScore(0);
+          setCurrentIndex(0);
           setFinished(false);
           setWrongWords([]);
+          setFeedback("");
           if (wrongWords.length > 0) generateQuestion(wrongWords);
         }}
       />
@@ -118,7 +133,7 @@ const Quiz = () => {
 
       {/* Score */}
       <p className="text-sm text-gray-800">
-        <span className="font-bold">{total}</span> / {words.length}
+        {currentIndex} / {words.length}
       </p>
 
       {/* 上方方框：英文 */}

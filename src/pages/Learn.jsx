@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 //import { db ,auth } from "../firebase";
 //import { collection, getDocs, query, where, limit } from "firebase/firestore";
-import "../styles/Learn.css"; 
+import "../styles/Learn.css";
 import { loadWords } from "../components/loadWords";
 import { LoadingSpinner } from "../components/loadSpinner";
 
@@ -19,19 +19,12 @@ const Learn = () => {
   const userLang = localStorage.getItem("language") || "transl";
 
   useEffect(() => {
-    const fetchCards = async () => {
-      setLoading(true); // loading
-      try {
-        // call loadWords in "../components/loadWords"
-        const wordList = await loadWords(id, { random: true, limitNum: 15 });
-        setCards(wordList);
-      } catch (e) {
-        console.error("Error loading words:", e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCards();
+    const cacheKey = `selectedWords-${id}`;
+    const saved = localStorage.getItem(cacheKey);
+    if (saved) {
+      setCards(JSON.parse(saved)); // 或 setCards()
+    }
+    setLoading(false);
   }, [id]);
 
   // 鍵盤左右切換
@@ -59,7 +52,7 @@ const Learn = () => {
   console.log(userLang);
 
   const currentCard = cards[currentIndex];
-  
+
   return (
     <div className="flex flex-col items-center mt-3">
       <h2 className="text-gray-600 mb-2">{source}</h2>

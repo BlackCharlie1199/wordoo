@@ -1,5 +1,6 @@
 import { db, auth } from "../firebase";
 import { collection, getDocs, query, where, limit } from "firebase/firestore";
+import defaultWords from "../assets/words.json";
 
 /** 
  * 讀取單字資料
@@ -8,17 +9,45 @@ import { collection, getDocs, query, where, limit } from "firebase/firestore";
  * @param {boolean} options.random - 是否隨機 (預設 false)
  * @param {number} options.limitNum - 最多抓幾筆 (隨機才用到)
  */
-export const loadWords = async (bankId, { random = false, limitNum = 0 } = {}) => {
+export const loadWords = async (
+  bankId,
+  { random = false, limitNum = 0 } = {}
+) => {
   try {
+    // ✅ default wordbank：直接讀本地 JSON
+    if (bankId === "default") {
+      let words = defaultWords.map((w, idx) => {
+        // 從 localStorage 抓設定
+        const savedStats = JSON.parse(localStorage.getItem("defaultWordStats") || "{}");
+        const stats = savedStats[w.en] || {};
+
+        return {
+          id: (idx + 1).toString(),
+          ...w,
+          importance: stats.importance ?? 3,   // 預設 3
+          proficiency: stats.proficiency ?? 0, // 預設 0
+          rand: Math.random()
+        };
+      });
+
+      if (random) {
+        words = words.sort(() => Math.random() - 0.5);
+      }
+      if (limitNum > 0) {
+        words = words.slice(0, limitNum);
+      }
+
+      return words;
+    }
+
+    // 🔽 以下為非 default 的情況，才去 Firestore
     const user = auth.currentUser;
     let wordsRef;
     let snap;
 
     if (random) {
-      // fot Quiz
       const r = Math.random();
 
-      // If there exist the wordbank user made, pick it in priority
       if (user) {
         wordsRef = collection(db, "users", user.uid, "wordbanks", bankId, "words");
         const q = query(wordsRef, where("rand", ">=", r), limit(limitNum));
@@ -43,7 +72,6 @@ export const loadWords = async (bankId, { random = false, limitNum = 0 } = {}) =
         }
       }
     } else {
-      // for MyWord & Learn
       if (user) {
         wordsRef = collection(db, "users", user.uid, "wordbanks", bankId, "words");
         snap = await getDocs(wordsRef);

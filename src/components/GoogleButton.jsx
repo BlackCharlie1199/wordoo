@@ -1,7 +1,13 @@
 // GoogleButton.jsx
 import React from "react";
+//translate
+import { useTranslation } from "react-i18next";
+
 
 export const GoogleSignInButton = ({ onClick }) => {
+  
+  const { t } = useTranslation();
+  
   return (
     <button
       onClick={onClick}
@@ -31,7 +37,7 @@ export const GoogleSignInButton = ({ onClick }) => {
         />
       </svg>
 
-      <span className="text-gray-700 font-medium">Sign in with Google</span>
+      <span className="text-gray-700 font-medium">{t("signInWithGoogle")}</span>
     </button>
   );
 };

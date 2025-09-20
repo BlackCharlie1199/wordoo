@@ -6,7 +6,6 @@ import MyWord from './pages/MyWord';
 import Setting from './pages/Setting';
 import WordBank from './pages/WordBank';
 import Quiz from './pages/Quiz';
-import Review from "./pages/Review";
 import Learn from './pages/Learn';
 import Spell from './pages/Spell';
 import './index.css';
@@ -14,10 +13,12 @@ import './styles/header.css';
 import './styles/footer.css';
 import { loadUserLanguage } from './pages/helper';
 
+
 const App = () => {
 
   const location = useLocation();
   const showAddButton = location.pathname.startsWith("/myword");
+  const hideFooter = location.pathname.startsWith("/spell");
 
   useEffect(() => {
     loadUserLanguage();
@@ -38,7 +39,6 @@ const App = () => {
           <Route path="/myword" element={<MyWord />} />
           <Route path="/setting" element={<Setting />} />
           <Route path="/myword/wordbank/:id" element={<WordBank/>} />
-          <Route path="/review" element={<Review />} />
           <Route path="/quiz/:id" element={<Quiz />} />
           <Route path="/learn/:id" element={<Learn />} />
           <Route path="/spell/:id" element={<Spell />} />
@@ -46,6 +46,7 @@ const App = () => {
       </main>
 
       {/* Footer Component */}
+      {!hideFooter && (
       <footer className="footer-bar px-10">
         {showAddButton && (
           <div className='flex justify-between w-full'>
@@ -71,6 +72,7 @@ const App = () => {
           </div>
         )}
       </footer>
+    )}
     </div>
   )
 };

@@ -20,10 +20,11 @@ const MyWord = () => {
       try {
         let data = [];
 
-        const defaultSnap = await getDocs(collection(db, "wordbanks"));
-        const defaultData = defaultSnap.docs.map(d => ({ id: d.id, ...d.data(), isDefault: true }));
-
-        data = [...defaultData];
+        data = [{
+          id: "default",
+          name: "Default Word Bank",
+          description: "Basic 1200 words"
+        }];
 
         if (user) {
           const userSnap = await getDocs(collection(db, "users", user.uid, "wordbanks"));

@@ -1,0 +1,21 @@
+{
+  "myWord": "मेरे शब्द",
+  "setting": "सेटिंग",
+  "signOut": "साइन आउट",
+  "signInWithGoogle": "गूगल से साइन इन करें",
+  "submit": "जमा करें",
+  "correct": "सही!",
+  "wrong": "गलत",
+  "progress": "{{current}} / {{total}}",
+  "placeholder": "अपना उत्तर लिखें",
+  "selectLanguage": "भाषा चुनें",
+  "settingPage": "सेटिंग पेज",
+  "flip": "पलटें",
+  "spelling": "वर्तनी",
+  "trueOrFalse": "सही या गलत",
+  "reviewSettings": "समीक्षा सेटिंग",
+  "cancel": "रद्द करें",
+  "reviewWrongWords": "गलत शब्दों की समीक्षा",
+  "backToWordBanks": "शब्द बैंक पर वापस जाएँ",
+  "sessionFinished": "सत्र समाप्त!"
+}

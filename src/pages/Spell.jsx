@@ -5,6 +5,10 @@ import { collection, getDocs, query, where, limit } from "firebase/firestore";
 import { LoadingSpinner } from "../components/loadSpinner";
 import { loadWords } from "../components/loadWords";
 import ResultScreen from "../components/resultScreen.jsx";
+import speak from "../components/Speek.jsx";
+//translate
+import { useTranslation } from "react-i18next";
+import { updateWordStats } from "../components/updateWordStats.jsx";
 
 const Spell = () => {
   const { id } = useParams();
@@ -13,51 +17,70 @@ const Spell = () => {
   const [input, setInput] = useState("");
   const [feedback, setFeedback] = useState("");
   const [loading, setLoading] = useState(true);
-  const [score, setScore] = useState(0); // ✅ 修改：答對數
-  const [total, setTotal] = useState(0); // ✅ 修改：總題數
+  const [firstTryScore, setFirstTryScore] = useState(0);
   const [finished, setFinished] = useState(false); // ✅ 修改：是否結束
   const [wrongWords, setWrongWords] = useState([]); // ✅ 新增：答錯單字收集
   const userLang = localStorage.getItem("language") || "transl";
+  const { t } = useTranslation();
+
+
 
   useEffect(() => {
-    const fetchWords = async () => {
-      setLoading(true);
-      const wordList = await loadWords(id, { random: true, limitNum: 15 }); // ✅ 修改：隨機取 15 個
-      setWords(wordList);
-      setLoading(false);
-    };
-    fetchWords();
+    const cacheKey = `selectedWords-${id}`;
+    const saved = localStorage.getItem(cacheKey);
+    if (saved) {
+      setWords(JSON.parse(saved)); // 或 setCards()
+    }
+    setLoading(false);
   }, [id]);
 
   const current = words[currentIndex]; // ✅ 修改：取得目前題目
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!current) return;
 
-    if (input.trim().toLowerCase() === current.en.toLowerCase()) {
-      setScore((prev) => prev + 1);
-      setTotal((prev) => prev + 1);
-      setFeedback("✅ Correct!");
+    const isCorrect = input.trim().toLowerCase() === current.en.toLowerCase();
+
+    if (isCorrect) {
+      setFeedback("✅");
+
+      if (!wrongWords.some((item) => item.en === current.en)) {
+        setFirstTryScore((prev) => prev + 1);
+        const updatedWord = await updateWordStats(id, current, true);
+        setWords((prev) => {
+          const updated = prev.map((w, idx) => (idx === currentIndex ? updatedWord : w));
+          localStorage.setItem(`selectedWords-${id}`, JSON.stringify(updated)); // 🔥 加這行
+          return updated;
+        });
+      }
+
+
       setTimeout(() => {
         setInput("");
         setFeedback("");
-
-        if (currentIndex + 1 >= words.length) { // ✅ 修改：超過 15 題 → 結算
+        if (currentIndex + 1 >= words.length) {
           setFinished(true);
         } else {
-          setCurrentIndex(currentIndex + 1); // ✅ 修改：跳到下一題
+          setCurrentIndex(currentIndex + 1);
         }
       }, 500);
     } else {
-      setFeedback(`❌ ${current.en}`); // ✅ 修改：答錯時停留，顯示正確答案
-      setWrongWords((prev) => 
-        prev.some(item => item.en === current.en) ? prev :[ ...prev, current]
-      ); // 加入錯誤單字列表
+      setFeedback(`❌ ${current.en}`);
+
+      // ✅ 更新 Firestore & 本地
+      const updatedWord = await updateWordStats(id, current, false);
+      setWords((prev) =>
+        prev.map((w, idx) => (idx === currentIndex ? updatedWord : w))
+      );
+
+      setWrongWords((prev) =>
+        prev.some((item) => item.en === current.en) ? prev : [...prev, current]
+      );
     }
   };
 
-  console.log(wrongWords);
+
 
   const handleChange = (e) => {
     setInput(e.target.value);
@@ -69,15 +92,14 @@ const Spell = () => {
   if (finished) { // ✅ 修改：結算畫面
     return (
       <ResultScreen
-        score={score}
+        score={firstTryScore}
         total={words.length}
         wrongWords={wrongWords}
         onRetryWrong={() => {
           setWords(wrongWords); // ✅ 修改：只重做答錯的單字
           setCurrentIndex(0); // ✅ 修改：重新從第一題開始
-          setTotal(0);
-          setScore(0);
           setFinished(false);
+          setFirstTryScore(0);
           setWrongWords([]);
         }}
       />
@@ -86,8 +108,9 @@ const Spell = () => {
 
   if (!current) return <p>No words available</p>;
 
+
   return (
-    <div className="flex flex-col items-center mt-2 space-y-3">
+    <div className="flex flex-col items-center justify-start min-h-screen mt-0 space-y-3">
 
       {/* 正確答案 / 回饋（固定高度，避免跳動） */}
       <div className="h-6 flex items-center justify-center">
@@ -100,19 +123,29 @@ const Spell = () => {
       </div>
 
       {/* 題數 */}
-      <div className="h-6 flex items-center justify-center">
+      <div className="h-6 flex items-center justify-center m-0">
         <p className="text-sm text-gray-600">
-          {total} / {words.length}
+          {currentIndex} / {words.length}
         </p>
       </div>
 
       {/* 題目提示 */}
-      <div className="text-lg font-bold">
-        {current.en[0]} {Array(current.en.length - 1).fill("_").join(" ")}
+      <div className="text-lg font-bold flex items-center gap-2">
+        <span>
+          {current.en[0]} {Array(current.en.length - 1).fill("_").join(" ")}
+        </span>
+        <button
+          onClick={() => speak(current.en, "en")}
+          className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm"
+        >
+          🔊
+        </button>
       </div>
 
       {/* 翻譯 */}
-      <p className="text-gray-600">{current[userLang]}</p>
+      <p className="text-gray-600 flex items-center gap-2">
+        {current[userLang]}
+      </p>
 
       {/* 答題區 */}
       <form onSubmit={handleSubmit} className="flex flex-col items-center gap-2 mt-2">
@@ -121,13 +154,13 @@ const Spell = () => {
           value={input}
           onChange={handleChange}
           className="border rounded p-2 w-40 text-center"
-          placeholder="Type your answer"
+          placeholder={t("placeholder")}
         />
         <button
           type="submit"
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
-          Submit
+          {t("submit")}
         </button>
       </form>
     </div>
