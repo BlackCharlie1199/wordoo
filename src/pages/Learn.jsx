@@ -12,6 +12,7 @@ const Learn = () => {
   const [flipped, setFlipped] = useState(false);
   const [source, setSource] = useState("");
   const [loading, setLoading] = useState(true);
+  const [finished, setFinished] = useState(false);
   const userLang = localStorage.getItem("language") || "transl";
 
   useEffect(() => {
@@ -81,13 +82,11 @@ const Learn = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [cards]);
 
-  if (cards.length === 0) {
-    return <p className="p-4">Loading cards...</p>;
-  }
 
-  const currentCard = cards[currentIndex];
   if (loading) return <LoadingSpinner></LoadingSpinner>;
 
+  const currentCard = cards[currentIndex];
+  
   return (
     <div className="flex flex-col items-center mt-3">
       <h2 className="text-gray-600 mb-2">{source}</h2>

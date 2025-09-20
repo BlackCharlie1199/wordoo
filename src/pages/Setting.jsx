@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { saveUserLanguage } from "./helper";
 
 const Setting = () => {
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState("vi");
 
   useEffect(() => {
     const savedLang = localStorage.getItem("language");
@@ -25,9 +25,13 @@ const Setting = () => {
       <label className="block mt-4 text-[12pt]">
         Choose Language:
         <select value={language} onChange={handleChange} className="ml-2 p-1 border">
+          <option value="hi">हिन्दी</option>
+          <option value="bn">বাংলা</option>
+          <option value="te">తెలుగు</option>
+          <option value="mr">मराठी</option>
+          <option value="ta">தமிழ்</option>
+          <option value="ur">اُردُو</option>
           <option value="vi">Tiếng Việt</option>
-          <option value="th">ไทย</option>
-          <option value="id">Bahasa Indonesia</option>
         </select>
       </label>
     </div>

@@ -11,6 +11,9 @@ const Spell = () => {
   const [input, setInput] = useState("");
   const [feedback, setFeedback] = useState("");
   const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState(0); // 已作答題數
+  const [score, setScore] = useState(0); // 答對數
+  const [finished, setFinished] = useState(false);
   const userLang = localStorage.getItem("language") || "transl";
 
   useEffect(() => {
@@ -67,15 +70,19 @@ const Spell = () => {
     if (!current) return;
 
     if (input.trim().toLowerCase() === current.en.toLowerCase()) {
+      // ✅ 答對才算一題
+      setScore((prev) => prev + 1);
+      setTotal((prev) => prev + 1);
+
       setFeedback("✅ Correct!");
       setTimeout(() => {
         setInput("");
         setFeedback("");
-        // 下一題
         setCurrent(words[Math.floor(Math.random() * words.length)]);
       }, 800);
     } else {
-      setFeedback(`❌ ${current.en}`); // 顯示正確答案
+      // ❌ 答錯先顯示正確答案，但不加 total
+      setFeedback(`❌ ${current.en}`);
     }
   };
 
@@ -92,17 +99,25 @@ const Spell = () => {
   if (!current) return <p>No words available</p>;
 
   return (
-    <div className="flex flex-col items-center mt-2 gap-2">
+    <div className="flex flex-col items-center mt-2 space-y-3">
 
-      {/* 回饋 */}
-      <div className="h-6 flex items-center">
+      {/* 正確答案 / 回饋（固定高度，避免跳動） */}
+      <div className="h-6 flex items-center justify-center">
         <p
-          className={`transition-opacity duration-300 font-semibold ${feedback ? "opacity-100" : "opacity-0"
-            } ${feedback.startsWith("❌") ? "text-red-500" : "text-green-600"}`}
+          className={`text-sm font-semibold ${feedback.startsWith("❌") ? "text-red-500" : "text-green-600"
+            }`}
         >
           {feedback}
         </p>
       </div>
+
+      {/* 題數 */}
+      <div className="h-6 flex items-center justify-center">
+        <p className="text-sm text-gray-600">
+          {total} / {words.length}
+        </p>
+      </div>
+
       {/* 題目提示 */}
       <div className="text-lg font-bold">
         {current.en[0]} {Array(current.en.length - 1).fill("_").join(" ")}
@@ -112,7 +127,7 @@ const Spell = () => {
       <p className="text-gray-600">{current[userLang]}</p>
 
       {/* 答題區 */}
-      <form onSubmit={handleSubmit} className="flex flex-col items-center gap-3">
+      <form onSubmit={handleSubmit} className="flex flex-col items-center gap-2 mt-2">
         <input
           type="text"
           value={input}
@@ -127,7 +142,6 @@ const Spell = () => {
           Submit
         </button>
       </form>
-
     </div>
   );
 };

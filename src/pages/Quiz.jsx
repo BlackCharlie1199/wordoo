@@ -4,6 +4,7 @@ import { db, auth } from "../firebase";
 import { collection, getDocs, query, where, limit } from "firebase/firestore";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { LoadingSpinner } from "../components/loadSpinner";
+import ResultScreen from "../components/resultScreen.jsx";
 
 const Quiz = () => {
   const { id } = useParams();
@@ -16,6 +17,8 @@ const Quiz = () => {
   const [score, setScore] = useState(0); // ✅ 答對數
   const [total, setTotal] = useState(0); // ✅ 總題數
   const userLang = localStorage.getItem("language") || "transl";
+  const [finished, setFinished] = useState(false);
+  const [wrongWords, setWrongWords] = useState([]);
 
   useEffect(() => {
     const loadWords = async () => {
@@ -96,17 +99,43 @@ const Quiz = () => {
 
     // ✅ 更新計分
     setTotal((prev) => prev + 1);
-    if (isCorrect) setScore((prev) => prev + 1);
+    if (isCorrect) {
+      setScore((prev) => prev + 1);
+    } else {
+      setWrongWords((prev) => [...prev, current]);
+    }
 
     setFeedback(isCorrect ? "✅" : "❌");
 
     setTimeout(() => {
-      generateQuestion(words);
-      setFeedback("");
+      if (total + 1 >= words.length) {
+        setFinished(true);
+      } else {
+        generateQuestion(words);
+        setFeedback("");
+      }
     }, 500);
   };
 
   if (loading) return <LoadingSpinner></LoadingSpinner>;
+
+  if (finished) {
+    return (
+      <ResultScreen
+        score={score}
+        total={words.length}
+        wrongWords={wrongWords}
+        onRetryWrong={() => {
+          setWords(wrongWords);
+          setTotal(0);
+          setScore(0);
+          setFinished(false);
+          setWrongWords([]);
+          if (wrongWords.length > 0) generateQuestion(wrongWords);
+        }}
+      />
+    );
+  }
 
   return (
     <div className="p-2 flex flex-col items-center gap-3 text-sm min-h-screen">
