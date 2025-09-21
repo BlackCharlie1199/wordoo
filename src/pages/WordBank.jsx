@@ -8,6 +8,7 @@ import { LoadingSpinner } from "../components/loadSpinner";
 //translate
 import { useTranslation } from "react-i18next";
 import { loadWords } from "../components/loadWords";
+import { FiRefreshCw } from "react-icons/fi";
 
 
 const WordBank = () => {
@@ -148,6 +149,17 @@ const WordBank = () => {
           <p className="text-gray-600 mb-3">{bankInfo.description}</p>
         </>
       )}
+      <button
+        onClick={async () => {
+          const words = await loadWords(id, { random: true, limitNum: 30 });
+          setWords(words.map((w, i) => ({ id: i.toString(), ...w })));
+          localStorage.setItem(`selectedWords-${id}`, JSON.stringify(words));
+        }}
+        className="p-2 rounded-full hover:bg-gray-200 transition"
+        title="Reset"
+      >
+        <FiRefreshCw size={20} />
+      </button>
 
       <ul className="space-y-3">
         {words.map((word) => (
