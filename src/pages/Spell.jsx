@@ -84,20 +84,20 @@ const Spell = () => {
 
   const handleChange = (e) => {
     setInput(e.target.value);
-    // ✅ 修改：答錯提示保留直到答對
+    // 答錯提示保留直到答對
   };
 
   if (loading) return <LoadingSpinner />;
 
-  if (finished) { // ✅ 修改：結算畫面
+  if (finished) { //結算畫面
     return (
       <ResultScreen
         score={firstTryScore}
         total={words.length}
         wrongWords={wrongWords}
         onRetryWrong={() => {
-          setWords(wrongWords); // ✅ 修改：只重做答錯的單字
-          setCurrentIndex(0); // ✅ 修改：重新從第一題開始
+          setWords(wrongWords); // 只重做答錯的單字
+          setCurrentIndex(0); // 重新從第一題開始
           setFinished(false);
           setFirstTryScore(0);
           setWrongWords([]);

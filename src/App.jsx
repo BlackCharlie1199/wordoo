@@ -18,7 +18,9 @@ const App = () => {
 
   const location = useLocation();
   const showAddButton = location.pathname.startsWith("/myword");
-  const hideFooter = location.pathname.startsWith("/spell");
+  const hiddenPages = ["/spell", "/quiz", "/learn"]; // ✅ 集中管理
+  const hideFooter = hiddenPages.some(path => location.pathname.startsWith(path));
+  
 
   useEffect(() => {
     loadUserLanguage();
