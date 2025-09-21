@@ -1,0 +1,17 @@
+.footer-bar{
+  @apply 
+    /* the height of bar */
+    h-10 
+
+    /* backround color of bar */
+    bg-blue-600 flex 
+
+    /* item's position */
+    items-center justify-center 
+
+    /* fix the header in the top */
+    fixed bottom-0 left-0 w-full z-50
+
+    /* text color */
+    text-white text-lg font-bold;
+}

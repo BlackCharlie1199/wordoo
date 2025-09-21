@@ -1,0 +1,21 @@
+{
+  "myWord": "میرے الفاظ",
+  "setting": "سیٹنگ",
+  "signOut": "سائن آؤٹ",
+  "signInWithGoogle": "گوگل کے ساتھ سائن ان کریں",
+  "submit": "جمع کریں",
+  "correct": "صحیح!",
+  "wrong": "غلط",
+  "progress": "{{current}} / {{total}}",
+  "placeholder": "اپنا جواب لکھیں",
+  "selectLanguage": "زبان منتخب کریں",
+  "settingPage": "سیٹنگ صفحہ",
+  "flip": "پلٹائیں",
+  "spelling": "ہجے",
+  "trueOrFalse": "صحیح یا غلط",
+  "reviewSettings": "ریویو سیٹنگز",
+  "cancel": "منسوخ کریں",
+  "reviewWrongWords": "غلط الفاظ کا جائزہ لیں",
+  "backToWordBanks": "ورڈ بینکس پر واپس جائیں",
+  "sessionFinished": "سیشن ختم!"
+}

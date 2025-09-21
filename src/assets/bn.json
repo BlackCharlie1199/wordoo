@@ -1,0 +1,21 @@
+{
+  "myWord": "আমার শব্দ",
+  "setting": "সেটিংস",
+  "signOut": "সাইন আউট",
+  "signInWithGoogle": "গুগল দিয়ে সাইন ইন করুন",
+  "submit": "জমা দিন",
+  "correct": "সঠিক!",
+  "wrong": "ভুল",
+  "progress": "{{current}} / {{total}}",
+  "placeholder": "আপনার উত্তর লিখুন",
+  "selectLanguage": "ভাষা নির্বাচন করুন",
+  "settingPage": "সেটিং পেজ",
+  "flip": "ফ্লিপ",
+  "spelling": "বানান",
+  "trueOrFalse": "সত্য বা মিথ্যা",
+  "reviewSettings": "রিভিউ সেটিংস",
+  "cancel": "বাতিল করুন",
+  "reviewWrongWords": "ভুল শব্দগুলি পর্যালোচনা করুন",
+  "backToWordBanks": "ওয়ার্ড ব্যাংকে ফিরে যান",
+  "sessionFinished": "সেশন শেষ!"
+}

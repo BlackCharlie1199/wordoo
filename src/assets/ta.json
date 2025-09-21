@@ -1,0 +1,21 @@
+{
+  "myWord": "எனது சொற்கள்",
+  "setting": "அமைப்பு",
+  "signOut": "வெளியேறு",
+  "signInWithGoogle": "Google மூலம் உள்நுழைக",
+  "submit": "சமர்ப்பிக்கவும்",
+  "correct": "சரி!",
+  "wrong": "தவறு",
+  "progress": "{{current}} / {{total}}",
+  "placeholder": "உங்கள் பதிலை உள்ளிடவும்",
+  "selectLanguage": "மொழியைத் தேர்ந்தெடுக்கவும்",
+  "settingPage": "அமைப்பு பக்கம்",
+  "flip": "திருப்புக",
+  "spelling": "எழுத்துப்பிழை",
+  "trueOrFalse": "உண்மை அல்லது தவறு",
+  "reviewSettings": "ரிவ்யூ அமைப்புகள்",
+  "cancel": "ரத்து செய்",
+  "reviewWrongWords": "தவறான சொற்களை மதிப்பாய்வு செய்க",
+  "backToWordBanks": "வேர்ட்பேங்க்களுக்கு திரும்பு",
+  "sessionFinished": "அமர்வு முடிந்தது!"
+}
