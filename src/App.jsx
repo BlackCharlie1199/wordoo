@@ -17,8 +17,8 @@ import { loadUserLanguage } from './pages/helper';
 const App = () => {
 
   const location = useLocation();
-  const showAddButton = location.pathname.startsWith("/myword");
-  const hiddenPages = ["/spell", "/quiz", "/learn"]; // ✅ 集中管理
+  const showAddButton = location.pathname.startsWith("/myword/wordbank");
+  const hiddenPages = ["/spell", "/quiz", "/learn"];
   const hideFooter = hiddenPages.some(path => location.pathname.startsWith(path));
   
 
@@ -51,27 +51,28 @@ const App = () => {
       {!hideFooter && (
       <footer className="footer-bar px-10">
         {showAddButton && (
-          <div className='flex justify-between w-full'>
+          <div className='flex justify-center w-full'>
             {/* 左邊加號 */}
-            <button
+            {false && <button
               onClick={() => {
                 window.dispatchEvent(new Event("add"));
               }}
               className="bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 transition"
             >
               <FaPlus size={16} />
-            </button>
+            </button> }
+            
 
             {/* 右邊書本 */}
             <button
               onClick={() => {
                 window.dispatchEvent(new Event("review"));
               }}
-              className="bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition"
+              className="bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition "
             >
               <FaBook size={16} />
             </button>
-          </div>
+          </div> 
         )}
       </footer>
     )}

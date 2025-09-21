@@ -1,4 +1,3 @@
-// src/components/ResultScreen.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 //translate

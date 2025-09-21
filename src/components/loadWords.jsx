@@ -9,12 +9,13 @@ import defaultWords from "../assets/words.json";
  * @param {boolean} options.random - 是否隨機 (預設 false)
  * @param {number} options.limitNum - 最多抓幾筆 (隨機才用到)
  */
+
 export const loadWords = async (
   bankId,
   { random = false, limitNum = 0 } = {}
 ) => {
   try {
-    // ✅ default wordbank：直接讀本地 JSON
+    // default wordbank：直接讀本地 JSON
     if (bankId === "default") {
       let words = defaultWords.map((w, idx) => {
         // 從 localStorage 抓設定
@@ -40,7 +41,7 @@ export const loadWords = async (
       return words;
     }
 
-    // 🔽 以下為非 default 的情況，才去 Firestore
+    // 非 default 的情況：去 Firestore
     const user = auth.currentUser;
     let wordsRef;
     let snap;

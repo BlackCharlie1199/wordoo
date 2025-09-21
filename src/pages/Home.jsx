@@ -40,7 +40,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <Button onClick={() => navigate('/myword')} cssClass="btn btn-green">{t("myWord")} {/* ✅ 使用翻譯 key */}</Button>
+      <Button onClick={() => navigate('/myword')} cssClass="btn btn-green">{t("myWord")}</Button>
       <Button onClick={() => navigate('/setting')} cssClass="btn btn-gray">{t("setting")}</Button>
       {user ? (
         <GoogleSignOutButton onClick={handleSignOut}>{t("signOut")}</GoogleSignOutButton>
